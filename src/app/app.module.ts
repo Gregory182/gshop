@@ -1,3 +1,6 @@
+import { UserService } from './services/user.service';
+import { AuthGuardService } from './services/auth-guard.service';
+import { AuthService } from './services/auth.service';
 
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -19,18 +22,20 @@ import { AdminOrdersComponent } from './components/admin-orders/admin-orders.com
 import { BsNavbarComponent } from './bs-navbar/bs-navbar.component';
 import { LoginComponent } from './components/login/login.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AdminAuthGuardService } from './services/admin-auth-guard.service';
 
 
 const routes: Routes = [
   { path: '', component: HomeComponent},
   { path: 'products', component: ProductsComponent},
-  { path: 'shopping-cart', component: ShopingCartComponent},
-  { path: 'check-out', component: CheckOutComponent},
-  { path: 'order-success', component: OrderSuccessComponent},
-  { path: 'my-orders', component: MyOrdersComponent},
   { path: 'login', component: LoginComponent},
-  { path: 'admin/products', component: AdminProductsComponent},
-  { path: 'admin/orders', component: AdminOrdersComponent},
+  { path: 'shopping-cart', component: ShopingCartComponent},
+
+  { path: 'check-out', component: CheckOutComponent, canActivate: [AuthGuardService]},
+  { path: 'order-success', component: OrderSuccessComponent, canActivate: [AuthGuardService]},
+  { path: 'my-orders', component: MyOrdersComponent, canActivate: [AuthGuardService]},
+  { path: 'admin/products', component: AdminProductsComponent, canActivate: [AuthGuardService]},
+  { path: 'admin/orders', component: AdminOrdersComponent, canActivate: [AuthGuardService]},
 
   { path: '**', component: LoginComponent},
 
@@ -61,7 +66,12 @@ const routes: Routes = [
     NgbModule.forRoot(),
     RouterModule.forRoot(routes)
   ],
-  providers: [],
+  providers: [
+    AuthService,
+    AuthGuardService,
+    UserService,
+    AdminAuthGuardService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
